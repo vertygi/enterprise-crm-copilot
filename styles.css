@@ -1,0 +1,600 @@
+/**
+ * Genesis CRM AI Assistant — Stylesheet
+ *
+ * Minimalist embedded sidebar that shifts and resizes the chat layout.
+ * Adapts to light/dark mode via [data-theme="dark"].
+ */
+
+:root {
+  --gai-bg: #ffffff;
+  --gai-surface: #f8fafc;
+  --gai-surface-hover: #f1f5f9;
+  --gai-border: #e2e8f0;
+  --gai-text: #0f172a;
+  --gai-text-muted: #64748b;
+  --gai-primary: #1f6f5c;
+  --gai-primary-hover: #175849;
+  --gai-primary-subtle: rgba(31, 111, 92, 0.08);
+  --gai-success: #10b981;
+  --gai-error: #ef4444;
+  --gai-error-bg: rgba(239, 68, 68, 0.08);
+}
+
+[data-theme="dark"], html.dark {
+  --gai-bg: #131d2b;
+  --gai-surface: #1a2636;
+  --gai-surface-hover: #223246;
+  --gai-border: #28374a;
+  --gai-text: #f1f5f9;
+  --gai-text-muted: #8a9bb0;
+  --gai-primary: #22a079;
+  --gai-primary-hover: #1b8463;
+  --gai-primary-subtle: rgba(34, 160, 121, 0.12);
+  --gai-success: #34d399;
+  --gai-error: #f87171;
+  --gai-error-bg: rgba(248, 113, 113, 0.1);
+}
+
+/* ── Minimalist Toggle Button on the Right Edge ─── */
+#gai-toggle-btn {
+  position: fixed;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 9999;
+  background: var(--gai-surface);
+  color: var(--gai-text-muted);
+  border: 1px solid var(--gai-border);
+  border-right: none;
+  border-radius: 6px 0 0 6px;
+  padding: 10px 6px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  box-shadow: -2px 0 8px rgba(0, 0, 0, 0.08);
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+  user-select: none;
+  transition: all 0.15s ease;
+}
+
+#gai-toggle-btn:hover {
+  background: var(--gai-primary);
+  color: #ffffff;
+  border-color: var(--gai-primary);
+}
+
+#gai-toggle-btn.gai-hidden {
+  display: none !important;
+}
+
+/* ── Embedded Side Pane (shifts CRM layout) ───────── */
+#gai-pane {
+  width: 380px;
+  min-width: 320px;
+  max-width: 440px;
+  flex-shrink: 0;
+  height: 100%;
+  background: var(--gai-bg);
+  border-left: 1px solid var(--gai-border);
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  color: var(--gai-text);
+  overflow: hidden;
+  z-index: 10;
+}
+
+#gai-pane.gai-closed {
+  display: none !important;
+}
+
+/* If fallback mounted outside flex container */
+#gai-pane.gai-fixed-fallback {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 99999;
+}
+
+/* ── Pane Header ─────────────────────────────────── */
+.gai-header {
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--gai-surface);
+  border-bottom: 1px solid var(--gai-border);
+  flex-shrink: 0;
+}
+
+.gai-title {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: -0.2px;
+}
+
+.gai-contact-tag {
+  font-size: 11px;
+  color: var(--gai-text-muted);
+  max-width: 160px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  background: var(--gai-bg);
+  border: 1px solid var(--gai-border);
+  padding: 2px 7px;
+  border-radius: 4px;
+}
+
+.gai-btn-close {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--gai-text-muted);
+  font-size: 15px;
+  line-height: 1;
+  padding: 4px 6px;
+  border-radius: 4px;
+  transition: all 0.15s;
+}
+
+.gai-btn-close:hover {
+  background: var(--gai-surface-hover);
+  color: var(--gai-text);
+}
+
+/* ── Minimal Tabs ────────────────────────────────── */
+.gai-tabs {
+  display: flex;
+  background: var(--gai-surface);
+  border-bottom: 1px solid var(--gai-border);
+  flex-shrink: 0;
+}
+
+.gai-tab {
+  flex: 1;
+  padding: 8px 4px;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--gai-text-muted);
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.15s;
+}
+
+.gai-tab:hover {
+  color: var(--gai-text);
+}
+
+.gai-tab.active {
+  color: var(--gai-primary);
+  border-bottom-color: var(--gai-primary);
+}
+
+/* ── Pane Body ───────────────────────────────────── */
+.gai-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.gai-tab-view {
+  display: none;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.gai-tab-view.active {
+  display: flex;
+}
+
+/* ── Client / Day / Attachments Info Card ─────────── */
+.gai-info-card {
+  background: var(--gai-surface);
+  border: 1px solid var(--gai-border);
+  border-radius: 6px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.gai-info-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.gai-info-col {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.gai-info-label {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  color: var(--gai-text-muted);
+}
+
+.gai-info-val {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--gai-text);
+  max-width: 140px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.gai-highlight {
+  color: var(--gai-primary);
+}
+
+.gai-badge-pill {
+  background: var(--gai-primary-subtle);
+  color: var(--gai-primary);
+  border: 1px solid var(--gai-border);
+  padding: 1px 6px;
+  border-radius: 4px;
+}
+
+.gai-info-sub {
+  font-size: 10.5px;
+  color: var(--gai-text-muted);
+  border-top: 1px solid var(--gai-border);
+  padding-top: 6px;
+}
+
+.gai-pencil-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 3px 4px;
+  color: var(--gai-text-muted);
+  border-radius: 3px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  transition: all 0.15s;
+}
+
+.gai-pencil-btn:hover {
+  background: var(--gai-surface-hover);
+  color: var(--gai-primary);
+}
+
+.gai-pencil-btn.gai-pinned {
+  color: var(--gai-primary);
+  background: var(--gai-primary-subtle);
+}
+
+/* ── Collapsible Details (System Prompt & Past Generations) ── */
+.gai-prompt-details {
+  border: 1px solid var(--gai-border);
+  border-radius: 6px;
+  background: var(--gai-surface);
+  padding: 6px 10px;
+  transition: all 0.15s;
+}
+
+.gai-prompt-summary {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--gai-text-muted);
+  cursor: pointer;
+  user-select: none;
+  outline: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.gai-prompt-summary:hover {
+  color: var(--gai-text);
+}
+
+.gai-prompt-details[open] {
+  padding: 8px 10px;
+}
+
+.gai-prompt-details[open] .gai-textarea {
+  margin-top: 6px;
+}
+
+/* Past Generations Accordion */
+.gai-history-details {
+  border: 1px solid var(--gai-border);
+  border-radius: 6px;
+  background: var(--gai-surface);
+  padding: 6px 10px;
+  transition: all 0.15s;
+}
+
+.gai-history-summary {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--gai-text-muted);
+  cursor: pointer;
+  user-select: none;
+  outline: none;
+}
+
+.gai-history-summary:hover {
+  color: var(--gai-text);
+}
+
+.gai-history-details[open] {
+  padding: 8px 10px;
+}
+
+.gai-gen-hist-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 8px;
+  max-height: 260px;
+  overflow-y: auto;
+}
+
+.gai-gen-hist-item {
+  background: var(--gai-bg);
+  border: 1px solid var(--gai-border);
+  border-radius: 5px;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.gai-gen-hist-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 10px;
+  color: var(--gai-text-muted);
+}
+
+.gai-gen-hist-content {
+  font-size: 11.5px;
+  line-height: 1.4;
+  white-space: pre-wrap;
+  word-break: break-word;
+  color: var(--gai-text);
+}
+
+/* ── Minimal Box / Card ──────────────────────────── */
+.gai-box {
+  background: var(--gai-surface);
+  border: 1px solid var(--gai-border);
+  border-radius: 6px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.gai-textarea {
+  width: 100%;
+  box-sizing: border-box;
+  background: var(--gai-bg);
+  border: 1px solid var(--gai-border);
+  border-radius: 4px;
+  padding: 8px;
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--gai-text);
+  resize: vertical;
+  min-height: 60px;
+  outline: none;
+  font-family: inherit;
+}
+
+.gai-textarea:focus, .gai-input:focus {
+  border-color: var(--gai-primary);
+}
+
+.gai-input {
+  width: 100%;
+  box-sizing: border-box;
+  background: var(--gai-bg);
+  border: 1px solid var(--gai-border);
+  border-radius: 4px;
+  padding: 6px 8px;
+  font-size: 12px;
+  color: var(--gai-text);
+  outline: none;
+}
+
+.gai-field-row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.gai-label {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--gai-text-muted);
+}
+
+/* ── Buttons Row & Submit / Stop ─────────────────── */
+.gai-gen-btn-row {
+  display: flex;
+  gap: 6px;
+  width: 100%;
+}
+
+.gai-btn-submit {
+  flex: 1;
+  padding: 9px 12px;
+  background: var(--gai-primary);
+  color: #ffffff;
+  border: none;
+  border-radius: 5px;
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: background 0.15s;
+}
+
+.gai-btn-submit:hover:not(:disabled) {
+  background: var(--gai-primary-hover);
+}
+
+.gai-btn-submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.gai-btn-stop {
+  padding: 9px 14px;
+  background: var(--gai-error);
+  color: #ffffff;
+  border: none;
+  border-radius: 5px;
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  transition: opacity 0.15s;
+}
+
+.gai-btn-stop:hover {
+  opacity: 0.9;
+}
+
+.gai-btn-stop.gai-active {
+  display: inline-flex;
+}
+
+.gai-btn-action {
+  background: var(--gai-bg);
+  border: 1px solid var(--gai-border);
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--gai-text);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.gai-btn-action:hover {
+  border-color: var(--gai-primary);
+  color: var(--gai-primary);
+}
+
+/* ── Generated Variant Cards ─────────────────────── */
+.gai-variant-card {
+  background: var(--gai-bg);
+  border: 1px solid var(--gai-border);
+  border-radius: 6px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.gai-variant-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--gai-primary);
+}
+
+.gai-variant-body {
+  font-size: 12.5px;
+  line-height: 1.45;
+  color: var(--gai-text);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.gai-variant-foot {
+  display: flex;
+  justify-content: flex-end;
+  gap: 6px;
+  margin-top: 4px;
+  padding-top: 6px;
+  border-top: 1px solid var(--gai-border);
+}
+
+/* ── History Text Box ────────────────────────────── */
+.gai-history-pre {
+  background: var(--gai-surface);
+  border: 1px solid var(--gai-border);
+  border-radius: 6px;
+  padding: 10px;
+  font-family: monospace;
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: var(--gai-text);
+  white-space: pre-wrap;
+  word-break: break-word;
+  max-height: 440px;
+  overflow-y: auto;
+  margin: 0;
+}
+
+/* ── Spinner ─────────────────────────────────────── */
+.gai-spinner {
+  width: 12px;
+  height: 12px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: gai-spin 0.6s linear infinite;
+  display: inline-block;
+}
+
+@keyframes gai-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ── Toast ───────────────────────────────────────── */
+.gai-toast {
+  position: fixed;
+  bottom: 20px;
+  right: 400px;
+  background: var(--gai-text);
+  color: var(--gai-bg);
+  padding: 8px 12px;
+  border-radius: 5px;
+  font-size: 12px;
+  font-weight: 500;
+  z-index: 999999;
+  opacity: 0;
+  transform: translateY(6px);
+  pointer-events: none;
+  transition: all 0.2s ease;
+}
+
+.gai-toast.gai-show {
+  opacity: 1;
+  transform: translateY(0);
+}

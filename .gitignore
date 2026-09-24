@@ -1,0 +1,12 @@
+# OS Files
+Thumbs.db
+.DS_Store
+
+# Logs & temp
+*.log
+*.tmp
+
+# Local credentials
+.env
+.env.local
+config.local.json
